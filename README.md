@@ -43,3 +43,53 @@ function App() {
   )
 }
 ```
+
+#### `ConsultarBaseDatos`
+
+**Descripción**
+
+El componente revisa el acceso a internet, si existe la conexión realiza una petición hacia el servidor para conectarse a la base de datos y realizar consultas a las tablas.
+
+**{ Propiedades }**
+
+- **query** *(string)** : consulta a ejecutar dentro del servidor de base de datos.
+
+
+**Resultados**
+```js
+import ConsultarBaseDatos from './component/ConsultarBaseDatos';
+
+function App() {
+
+  // única propiedad del componente
+  const props = {query : 'SELECT * FROM data;'}
+
+
+  return (
+    <div className="App">
+      <ConsultarBaseDatos {...props}/> // imprime en pantalla el objeto
+      /*ejemplo: SELECT
+        [{"campo1":"0","campo2":"updated","campo3":"updated","campo4":"100"},
+          {"campo1":"3","campo2":"primer","campo3":"segundo","campo4":"2"}]
+
+        ejemplo: UPDATE,DELETE,INSERT
+        {"rowsAffected": 1}
+      */
+
+      /* ejemplo: errores
+          - serverMysql: Duplicate entry '1' for key 'PRIMARY'
+          - No tiene acceso a internet.
+      */
+    </div>
+  )
+}
+```
+
+**En Servidor**
+*./recursos/ConsultarBaseDatos/conexion.php*
+
+Modificar las propiedades de la conexión con la base de datos a utilizar y host.
+
+*./recursos/ConsultarBaseDatos/consultas.php*
+
+Ejecuta las consultas enviadas.
