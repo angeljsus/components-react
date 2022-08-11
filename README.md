@@ -55,6 +55,8 @@ El componente revisa el acceso a internet, si existe la conexión realiza una pe
 - **query** *(string)** : consulta a ejecutar dentro del servidor de base de datos.
 
 
+*Nota*: El componente realiza la petición sobre la ruta `http://localhost/server/consultas.php` modificar la ruta de petición si no es la misma ubicación del recurso.
+
 **Resultados**
 ```js
 import ConsultarBaseDatos from './component/ConsultarBaseDatos';
