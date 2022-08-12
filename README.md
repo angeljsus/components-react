@@ -102,7 +102,7 @@ Ejecuta las consultas enviadas.
 
 ### Descripción
 
-Repositorio de funciones desarrolladas para ser utilizados dentro de aplicaciones de React.
+Funciones desarrolladas para ser utilizados dentro de aplicaciones de React.
 
 ### Funciones
 
@@ -141,7 +141,6 @@ validarUsuario(userName, password)
   /* throws: 
     - No fue posible autenticarse. Favor de revisar sus datos
     - Los campos NO deben estar vacios
-    - GET 404 (Not Found)     (En caso de no estar en red Institucional) - pero consulta de forma local. 
   */
 })
 
