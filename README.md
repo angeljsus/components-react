@@ -95,3 +95,54 @@ Modificar las propiedades de la conexión con la base de datos a utilizar y host
 *./recursos/ConsultarBaseDatos/consultas.php*
 
 Ejecuta las consultas enviadas.
+
+
+
+# Funciones React
+
+### Descripción
+
+Repositorio de funciones desarrolladas para ser utilizados dentro de aplicaciones de React.
+
+### Funciones
+
+*Archivo: validarUsuario.tsx*
+
+#### `validarUsuario(userName, password)`
+**Requerimientos**
+Requiere instalación previa de `react-xml-parser`.
+
+```bash
+npm install react-xml-parser
+```
+
+**Descripción**
+
+La función valida los datos del formulario para realizar la autenticación del usuario. Si no tiene conexión al ldap, autentica vía consulta a base de datos local.
+
+**Parámetros**
+
+- **userName** *(useRef)** : objeto de referencia al input de usuario dentro del componente. 
+- **password** *(useRef)** : objeto de referencia al input de contraseña dentro del componente. 
+
+
+**Resultados**
+```js
+const nameInput = useRef('');
+const passInput = useRef('');
+
+/*resuelve la promesa solo si el usuario fue autenticado*/
+validarUsuario(userName, password)
+.then(function(mensaje){
+  console.log(mensaje) // resultado: Autenticación exitosa
+})
+.catch(function(err){
+  console.error(err) 
+  /* throws: 
+    - No fue posible autenticarse. Favor de revisar sus datos
+    - Los campos NO deben estar vacios
+    - GET 404 (Not Found)     (En caso de no estar en red Institucional) - pero consulta de forma local. 
+  */
+})
+
+```
