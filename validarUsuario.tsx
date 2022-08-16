@@ -1,7 +1,7 @@
 import XMLParser from 'react-xml-parser';
 
 export function validarUsuario(userName, password){
-	const ldapSite = 'https://intranet.wapp2.inegi.gob.mx/sistemas/informaticos/ws/v2/ldp.asmx';
+	const ldapSite = 'https://intranet.wapp2.inegi.gob.mx/sistemas/informaticos/ws/v2/ldap.asmx';
 	const claveApp = 'DGES_NodeJs_GenContCap';
 
 	return new Promise(function(resolve, reject){
