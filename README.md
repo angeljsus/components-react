@@ -110,15 +110,18 @@ Funciones desarrolladas para ser utilizados dentro de aplicaciones de React.
 
 #### `validarUsuario(userName, password)`
 **Requerimientos**
-Requiere instalación previa de `react-xml-parser`.
+- Requiere instalación previa de `react-xml-parser` y el uso de script
+[querys](https://github.com/angeljsus/querys.git).
 
 ```bash
 npm install react-xml-parser
 ```
-
+```js
+import { select } from './querys'
+```
 **Descripción**
 
-La función valida los datos del formulario para realizar la autenticación del usuario. Si no tiene conexión al ldap, autentica vía consulta a base de datos local.
+La función valida los datos del formulario para realizar la autenticación del usuario. Si no tiene conexión al ldap, autentica vía consulta a base de datos local, en caso contrario si autentica exitosamente mediante ldap, realiza una petición al servidor para verificar que exista el usuario dentro de una tabla.
 
 **Parámetros**
 
@@ -133,15 +136,23 @@ const passInput = useRef('');
 
 /*resuelve la promesa solo si el usuario fue autenticado*/
 validarUsuario(userName, password)
-.then(function(mensaje){
-  console.log(mensaje) // resultado: Autenticación exitosa
+.then(function(estadoAuth){
+  console.log(estadoAuth) // resultado boolean: true || false
 })
 .catch(function(err){
   console.error(err) 
-  /* throws: 
-    - No fue posible autenticarse. Favor de revisar sus datos
-    - Los campos NO deben estar vacios
+  /* objeto json:
+    - { type: 'LocalDB', message: 'could not prepare statement (1 near "*": syntax error)'}
+    - { type: 'Server', message: 'No database selected'}
   */
 })
 
 ```
+**En Servidor**
+*./recursos/Autenticacion/conexion.php*
+
+Modificar las propiedades de la conexión con la base de datos a utilizar y host.
+
+*./recursos/Autenticacion/auth.php*
+
+Ejecuta las consulta dentro de la tabla registrada en el php.
