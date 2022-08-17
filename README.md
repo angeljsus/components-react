@@ -136,10 +136,10 @@ const passInput = useRef('');
 
 /*resuelve la promesa solo si el usuario fue autenticado*/
 validarUsuario(userName, password)
-.then(function(estadoAuth){
+.then( estadoAuth => {
   console.log(estadoAuth) // resultado boolean: true || false
 })
-.catch(function(err){
+.catch( err => {
   console.error(err) 
   /* objeto json:
     - { type: 'LocalDB', message: 'could not prepare statement (1 near "*": syntax error)'}
