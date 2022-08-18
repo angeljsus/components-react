@@ -44,59 +44,6 @@ function App() {
 }
 ```
 
-#### `ConsultarBaseDatos`
-
-**Descripción**
-
-El componente revisa el acceso a internet, si existe la conexión realiza una petición hacia el servidor para conectarse a la base de datos y realizar consultas a las tablas.
-
-**{ Propiedades }**
-
-- **query** *(string)** : consulta a ejecutar dentro del servidor de base de datos.
-
-
-*Nota*: El componente realiza la petición sobre la ruta `http://localhost/server/consultas.php` modificar la ruta de petición si no es la misma ubicación del recurso.
-
-**Resultados**
-```js
-import ConsultarBaseDatos from './component/ConsultarBaseDatos';
-
-function App() {
-
-  // única propiedad del componente
-  const props = {query : 'SELECT * FROM data;'}
-
-
-  return (
-    <div className="App">
-      <ConsultarBaseDatos {...props}/> // imprime en pantalla el objeto
-      /*ejemplo: SELECT
-        [{"campo1":"0","campo2":"updated","campo3":"updated","campo4":"100"},
-          {"campo1":"3","campo2":"primer","campo3":"segundo","campo4":"2"}]
-
-        ejemplo: UPDATE,DELETE,INSERT
-        {"rowsAffected": 1}
-      */
-
-      /* ejemplo: errores
-          - serverMysql: Duplicate entry '1' for key 'PRIMARY'
-          - No tiene acceso a internet.
-      */
-    </div>
-  )
-}
-```
-
-**En Servidor**
-*./recursos/ConsultarBaseDatos/conexion.php*
-
-Modificar las propiedades de la conexión con la base de datos a utilizar y host.
-
-*./recursos/ConsultarBaseDatos/consultas.php*
-
-Ejecuta las consultas enviadas.
-
-
 
 # Funciones React
 
@@ -106,9 +53,10 @@ Funciones desarrolladas para ser utilizados dentro de aplicaciones de React.
 
 ### Funciones
 
-*Archivo: validarUsuario.tsx*
-
 #### `validarUsuario(userName, password)`
+
+*Archivo: ValidarUsuario.tsx*
+
 **Requerimientos**
 - Requiere instalación previa de `react-xml-parser` y el uso de script
 [querys](https://github.com/angeljsus/querys.git).
@@ -127,7 +75,6 @@ La función valida los datos del formulario para realizar la autenticación del 
 
 - **userName** *(useRef)** : objeto de referencia al input de usuario dentro del componente. 
 - **password** *(useRef)** : objeto de referencia al input de contraseña dentro del componente. 
-
 
 **Resultados**
 ```js
@@ -156,3 +103,32 @@ Modificar las propiedades de la conexión con la base de datos a utilizar y host
 *./recursos/Autenticacion/auth.php*
 
 Ejecuta las consulta dentro de la tabla registrada en el php.
+
+#### `ejecutarConsulta(query)`
+
+*Archivo: ConsultaServidor.tsx*
+
+**Descripción**
+
+La función realiza una petición hacia el servidor para conectarse a la base de datos y realizar consultas sobre la tabla de la consulta recibida.
+
+**Parámetros**
+
+- **query** *(string)** : consulta a realizar en el servidor de base de datos. 
+
+**Resultados**
+```js
+const consulta = 'SELECT * FROM TBL_USUARIO';
+ejecutarConsulta(consulta)
+.then(data => {
+    console.log(data) // select resultado: [{id_usuario: 1, nombre_usuario:"Frank"},{id_usuario: 2, nombre_usuario:"Gina"}]
+    // update, delete, insert resultado: {"rowsAffected": 1} 
+})
+.catch( err => {
+    console.log(err) // resultado: serverMysql: Duplicate entry '1' for key 'PRIMARY'
+})
+```
+**En Servidor**
+*./recursos/ConsultaServidor/conexion.php*
+Modificar las propiedades de la conexión con la base de datos a utilizar y host.
+*./recursos/ConsultaServidor/consultas.php*
