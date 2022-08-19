@@ -3,7 +3,7 @@
 ### Descripción
 Repositorio de componentes para ser utilizados dentro de aplicaciones de React.
 
-### Componentes
+### Componentes (./component)
 
 #### `ImageLoader`
 **Descripción**
@@ -83,7 +83,7 @@ function App() {
 
 Funciones desarrolladas para ser utilizados dentro de aplicaciones de React.
 
-### Funciones
+### Funciones (./logic)
 
 #### `validarUsuario(userName, password)`
 
@@ -98,6 +98,7 @@ npm install react-xml-parser
 ```
 ```js
 import { select } from './querys'
+import { consultarServidor } from './ConsultarServidor';
 ```
 **Descripción**
 
