@@ -6,7 +6,7 @@
 	$username = "root";
 	$password = "";
 	$host = "localhost";
-	$dbname ="test";
+	$dbname ="tt";
 
 	$connect = mysqli_connect($host, $username, $password, $dbname);
 ?>

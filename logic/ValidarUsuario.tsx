@@ -40,13 +40,13 @@ const obtenerAutenticacion = (userName, password, ldap, clave) => {
  	if	(response.status == 404){
  		// no encontro la ldap, o fue inaccesible... realiza autenticación vía base datos local
  		// resuelve en catch para manejo del error => ERR_NAME_NOT_RESOLVED
- 		return Promise.reject({type:''})
+ 		return Promise.reject({ error: '' })
  	}
  	// espera y retorna el resultado
  	return response.text()
  })
  .then(response => {
- 	// si es autenticado "true" de lo contrario un texto xml
+ 	// si es autenticado true de lo contrario un texto xml
  	if(typeof response === 'boolean'){
  		return response;
  	}
@@ -66,7 +66,7 @@ const obtenerAutenticacion = (userName, password, ldap, clave) => {
  })
  .catch(err => {
  	// Si un tipo de error diferente a los que puedo escuchar, ejemplo: ERR_NAME_NOT_RESOLVED  
- 	if( !err.type ){
+ 	if( !err.error ){
  		// mandalo a la autenticación local
  		return obtenerAutenticacionLocal(userName, password)
  	} 
@@ -76,13 +76,15 @@ const obtenerAutenticacion = (userName, password, ldap, clave) => {
 }
 
 const obtenerAutenticacionServidor = (userName, password) => {
-	const serverFile = 'http://localhost/auth/auth.php';
-	let user = { name: userName.current.value, password: password.current.value }; 
+	const serverFile = 'http://localhost/servidor/consultas.php';
+	let data = { 
+		consulta: `SELECT * FROM TBL_USUARIO WHERE nombre_usuario="${userName.current.value}" AND permisos_usuario=1;`, 
+		tipo: 'select' 
+	}; 
 	let json = {}, respuesta = false;
-
 	return fetch(serverFile,{
 		method: 'POST',
-		body: JSON.stringify(user),
+		body: JSON.stringify(data),
 		headers : {
 			'Content-Type': 'application/json'
 		}
@@ -94,11 +96,10 @@ const obtenerAutenticacionServidor = (userName, password) => {
 		respuesta = false;
 		json =  JSON.parse(text);
 		// encontro un error
-		if(json.type){
+		if(json.error){
 			return Promise.reject( json )
 		}
-		// encontro un error
-		if(json.encontrados > 0){
+		if(json.length > 0){
 			respuesta = true;
 		}
 		return respuesta;
@@ -120,5 +121,5 @@ const obtenerAutenticacionLocal = (userName, password) => {
 		}
 		return respuesta;
 	})
-	.catch( err => Promise.reject( { type: 'LocalDB', message: err } ) )
+	.catch( err => Promise.reject( { error: 'LocalDB', message: err } ) )
 }

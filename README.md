@@ -44,6 +44,38 @@ function App() {
 }
 ```
 
+#### `ListaDesplegable`
+**Descripción**
+
+El componente carga las opciones de un elemento `<select>` con los resultados de una consulta de la base de datos local (si no hay conexión a internet) o base de datos de servidor (si exite la conexión a internet).
+
+**{ Propiedades }**
+
+- **queryServer** *(string)** : consulta a ejecutar cuando existe conexión a internet.
+- **queryLocal** *(json)** : 
+  - **tabla** *(string)**: nombre de la tabla que se va consultar la información.
+  - **props** *(json)**: objeto de parametro `props` que recibe una consulta de tipo función `select(tableName, props)` en script [querys](https://github.com/angeljsus/querys.git).
+
+**Requerimientos**
+El componente requiere el uso de las funciones de la carpeta `../logic/ConsultarServidor` y `../logic/querys`
+
+**Resultados**
+
+```js
+
+function App() {
+
+  const props = {
+    queryServer : 'SELECT * FROM TBL_USUARIO;',
+    queryLocal: { tabla: 'TBL_USUARIO', props: { cols:'nombre_usuario'} }
+  }
+
+  return (
+    <div className="App">
+      <ListaDesplegable {...props}/>
+    </div>
+}
+```
 
 # Funciones React
 
@@ -89,24 +121,16 @@ validarUsuario(userName, password)
 .catch( err => {
   console.error(err) 
   /* objeto json:
-    - { type: 'LocalDB', message: 'could not prepare statement (1 near "*": syntax error)'}
-    - { type: 'Server', message: 'No database selected'}
+    - { error: 'LocalDB', message: 'could not prepare statement (1 near "*": syntax error)'}
+    - { error: 'Server', message: 'No database selected'}
   */
 })
 
 ```
-**En Servidor**
-*./recursos/Autenticacion/conexion.php*
-
-Modificar las propiedades de la conexión con la base de datos a utilizar y host.
-
-*./recursos/Autenticacion/auth.php*
-
-Ejecuta las consulta dentro de la tabla registrada en el php.
 
 #### `ejecutarConsulta(query)`
 
-*Archivo: ConsultaServidor.tsx*
+*Archivo: ConsultarServidor.tsx*
 
 **Descripción**
 
@@ -125,10 +149,10 @@ ejecutarConsulta(consulta)
     // update, delete, insert resultado: {"rowsAffected": 1} 
 })
 .catch( err => {
-    console.log(err) // resultado: serverMysql: Duplicate entry '1' for key 'PRIMARY'
+    console.log(err) // resultado: {error: "Server", message: "Duplicate entry '1' for key 'PRIMARY'""}
 })
 ```
 **En Servidor**
-*./recursos/ConsultaServidor/conexion.php*
-Modificar las propiedades de la conexión con la base de datos a utilizar y host.
-*./recursos/ConsultaServidor/consultas.php*
+Modificar propiedades de la conexión.
+*./recursos/servidor/conexion.php*
+*./recursos/servidor/consultas.php*
