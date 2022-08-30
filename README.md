@@ -116,8 +116,13 @@ const passInput = useRef('');
 
 /*resuelve la promesa solo si el usuario fue autenticado*/
 validarUsuario(userName, password)
-.then( estadoAuth => {
-  console.log(estadoAuth) // resultado boolean: true || false
+.then( info => {
+  console.log(info) /* resultado json: 
+   - { message:'Autenticado con perfil de Kraken Slides', autenticado:true}
+   - { message:'Intentar con usuario y contraseña del Kraken Slides', autenticado:false}
+   - { message:'El usuario y/o contraseña son incorrectos.', autenticado:false}
+   - { message:'Lo siento no tiene permiso.', autenticado:false}
+  */
 })
 .catch( err => {
   console.error(err) 

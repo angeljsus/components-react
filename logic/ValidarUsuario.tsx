@@ -1,5 +1,6 @@
 import XMLParser from 'react-xml-parser';
 import { select } from './querys';
+import { consultarServidor } from './ConsultarServidor';
 
 export const validarUsuario = (userName, password) => {
 	const ldapSite = 'https://intranet.wapp2.inegi.gob.mx/sistemas/informaticos/ws/v2/ldap.asmx';
@@ -28,6 +29,7 @@ export const validarUsuario = (userName, password) => {
 const obtenerAutenticacion = (userName, password, ldap, clave) => {
 	let params = `loginUsr=${userName.current.value}&passUsr=${password.current.value}&claveAplicacion=${clave}`;
 	let urlAuth = `${ldap}/Autenticar?${params}`; 
+	let respuesta =  {	message: '', 	autenticado: false };
 
 	console.log('Realizando petición...')
 	return fetch(urlAuth, {
@@ -60,7 +62,8 @@ const obtenerAutenticacion = (userName, password, ldap, clave) => {
 				console.log('Autenticando en servidor...')
 				return obtenerAutenticacionServidor(userName, password);
 			}
-			return false;
+			respuesta.message = 'El usuario y/o contraseña son incorrectos.';
+			return respuesta;
  	}
  	return jsonResponse;
  })
@@ -76,49 +79,43 @@ const obtenerAutenticacion = (userName, password, ldap, clave) => {
 }
 
 const obtenerAutenticacionServidor = (userName, password) => {
-	const serverFile = 'http://localhost/servidor/consultas.php';
-	let data = { 
-		consulta: `SELECT * FROM TBL_USUARIO WHERE nombre_usuario="${userName.current.value}" AND permisos_usuario=1;`, 
-		tipo: 'select' 
-	}; 
-	let json = {}, respuesta = false;
-	return fetch(serverFile,{
-		method: 'POST',
-		body: JSON.stringify(data),
-		headers : {
-			'Content-Type': 'application/json'
+	let respuesta =  {	message: 'Lo siento no tiene permiso.', 	autenticado: false };
+	let consulta = `SELECT * FROM TBL_USUARIO WHERE 
+	nombre_usuario="${userName.current.value}" 
+	AND permisos_usuario=1;`;
+	let permiso = false;
+	return consultarServidor(consulta)
+	.then(data => {
+		permiso = false;
+		if(data.length > 0){
+			respuesta.message = 'Tiene permiso, en base de datos de servidor.'
+			permiso = true;
 		}
-	})
-	.then( response => {
-		return response.text();
-	})
-	.then( text => {
-		respuesta = false;
-		json =  JSON.parse(text);
-		// encontro un error
-		if(json.error){
-			return Promise.reject( json )
-		}
-		if(json.length > 0){
-			respuesta = true;
-		}
+		respuesta.autenticado = permiso
 		return respuesta;
 	})
 }
 
 const obtenerAutenticacionLocal = (userName, password) => {
+	const permisoValue = 1;
 	return select('TBL_USUARIO', {
 		cols: '*',
 		where : {
-			variables: "nombre_usuario, password_usuario",
-			valores: `${userName.current.value}__${password.current.value}`
+			variables: "nombre_usuario,password_usuario,permisos_usuario",
+			valores: `${userName.current.value}__${password.current.value}__1`
 		}
 	})
 	.then( respObj => {
-		let respuesta = false;
+		let respuesta =  {
+			message: 'Intentar con usuario y contraseña del Kraken Slides', 
+			autenticado: false 
+		};
+
 		if(respObj.length > 0){
-			respuesta = true;
+			respuesta.autenticado = true;
+			respuesta.message = 'Autenticado con perfil de Kraken Slides';
 		}
+
 		return respuesta;
 	})
 	.catch( err => Promise.reject( { error: 'LocalDB', message: err } ) )
