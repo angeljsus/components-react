@@ -88,7 +88,7 @@ const obtenerAutenticacionServidor = (userName, password) => {
 	.then(data => {
 		permiso = false;
 		if(data.length > 0){
-			respuesta.message = 'Tiene permiso, en base de datos de servidor.'
+			respuesta.message = 'Autenticado en servidor.'
 			permiso = true;
 		}
 		respuesta.autenticado = permiso
