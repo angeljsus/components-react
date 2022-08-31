@@ -1,6 +1,6 @@
-### Confifuraciones
+### Configuraciones
 
-#### Ofuscar código en Vite
+#### `Ofuscar código en Vite`
 
 **Descripción**
 
@@ -46,7 +46,7 @@ import { obfuscator } from 'rollup-obfuscator'; // importar la librería
 **NOTA:** las propiedades posibles de utilizar se encuentran en descritas en el apartado de (JavaScript Obfuscator Options)[https://www.npmjs.com/package/javascript-obfuscator].  
 
 
-#### Instalación de React Dev Tools
+#### `Instalación de React Dev Tools`
 
 **Descripción**
 
