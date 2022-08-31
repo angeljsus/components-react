@@ -43,7 +43,7 @@ import { obfuscator } from 'rollup-obfuscator'; // importar la librería
 
 ```
 
-**NOTA:** las propiedades posibles de utilizar se encuentran en descritas en el apartado de [JavaScript Obfuscator Options](https://www.npmjs.com/package/javascript-obfuscator])
+**NOTA:** las propiedades posibles de utilizar se encuentran en descritas en el apartado de [JavaScript Obfuscator Options](https://www.npmjs.com/package/javascript-obfuscator)
 
 
 #### `Instalación de React Dev Tools`
