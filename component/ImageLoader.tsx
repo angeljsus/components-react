@@ -24,7 +24,7 @@ function ImageLoader(props){
 
 
 	function loadImageTag(version){
-		console.log('<cache: %s, online: %s>',version, connection)
+		// console.log('<cache: %s, online: %s>',version, connection)
 		let estado = false;
 		// estoy online
 		if(connection){
@@ -57,33 +57,44 @@ function ImageLoader(props){
 				return setImagen(offlineImage);
 			})
 
+		} else {
+			return window.caches.has(version)
+			.then(function(have){
+				// hay version de cache almacenada
+				if(have){
+					// console.log('Tengo version')
+					return new Promise(function(resolve, reject){
+						window.caches.open(version)
+						.then(function(cache) {
+							return cache.match(onlineImage)
+							.then(function(response){
+								// console.log(response)
+								if(typeof response === 'object' && response.status === 200){
+									resolve(response.blob())
+										// return response.blob()
+								}
+								reject(false);
+							})
+						})
+					})
+					.then(function(response){
+						let pathCreated = URL.createObjectURL(response);
+						return pathCreated;
+					})
+					.then(function(pathImage){
+						console.log(':Presentando offlineimage desde cache:')
+					// cambiando el valor del estado de la imagen a presentar, desde cache
+						return setImagen(pathImage);
+					})
+					.catch(function(){
+						return setImagen(offlineImage);
+					})
+				} else {
+					console.log(':Presentando offlineimage desde local:')
+					return setImagen(offlineImage);
+				}
+			})
 		}
-		// estoy offline
-		return window.caches.has(version)
-		.then(function(have){
-			// hay version de cache almacenada
-			if(have){
-				return window.caches.open(version)
-				  .then(function(cache) {
-				  	return cache.match(onlineImage)
-				  	.then(function(response){
-				  		return response.blob();
-				  	})
-				  	.then(function(blob){
-				  		let pathCreated = URL.createObjectURL(blob);
-				  		return pathCreated;
-				  	})
-				  	.then(function(pathImage){
-							console.log(':Presentando offlineimage desde cache:')
-						// cambiando el valor del estado de la imagen a presentar, desde cache
-					 		return setImagen(pathImage);
-				  	})
-				  })
-			}
-			console.log(':Presentando offlineimage desde local:')
-			// cambiando el valor del estado de la imagen a presentar, desde local
-			return setImagen(offlineImage);
-		})
 	}
 
 	return (
