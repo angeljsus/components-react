@@ -24,7 +24,6 @@ function ImageLoader(props){
 
 
 	function loadImageTag(version){
-		// console.log('<cache: %s, online: %s>',version, connection)
 		let estado = false;
 		// estoy online
 		if(connection){
@@ -43,12 +42,10 @@ function ImageLoader(props){
 						// almacenando en cache
 						return window.caches.open(version)
 						.then(function(cache){
-							console.log(':Agregando imagen a cache:')
 							return cache.add(onlineImage);
 						})
 						.then(function(){
 							// cambiando el valor del estado de la imagen a presentar online
-							console.log(':Presentando onlineImage:')
 							return setImagen(onlineImage);
 						})
 					}
@@ -62,16 +59,13 @@ function ImageLoader(props){
 			.then(function(have){
 				// hay version de cache almacenada
 				if(have){
-					// console.log('Tengo version')
 					return new Promise(function(resolve, reject){
 						window.caches.open(version)
 						.then(function(cache) {
 							return cache.match(onlineImage)
 							.then(function(response){
-								// console.log(response)
 								if(typeof response === 'object' && response.status === 200){
 									resolve(response.blob())
-										// return response.blob()
 								}
 								reject(false);
 							})
@@ -82,7 +76,6 @@ function ImageLoader(props){
 						return pathCreated;
 					})
 					.then(function(pathImage){
-						console.log(':Presentando offlineimage desde cache:')
 					// cambiando el valor del estado de la imagen a presentar, desde cache
 						return setImagen(pathImage);
 					})
@@ -90,7 +83,6 @@ function ImageLoader(props){
 						return setImagen(offlineImage);
 					})
 				} else {
-					console.log(':Presentando offlineimage desde local:')
 					return setImagen(offlineImage);
 				}
 			})
