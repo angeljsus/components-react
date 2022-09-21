@@ -2,50 +2,51 @@ const consultarServidor = consulta => {
 	const serverFile = 'http://localhost/servidor/consultas.php';
 	const tipos = ['select', 'update', 'delete', 'insert'];
 	let sentencia = '', data = {};
-	tipos.map(tipo => {
+	tipos.map( tipo => {
 		status = consulta.toLowerCase().search([tipo]);
 		if(status >= 0){
 			sentencia = tipo; 
 		}
 	})
+
 	if(sentencia !== '' && consulta !== ''){
 		data = { consulta: consulta, tipo: sentencia };
 		return fetch(serverFile,{
 			method: 'POST',
 			body: JSON.stringify(data),
 			headers : {
-				'Content-Type': 'application/json'
+				'Content-Type': 'text/plain',
 			}
 		})
-		.then( response => { return response.text() })
+		.then( response => response.text() )
 		.then( text => {
-			let start = 0, end = 0, json = {};
-			let validation = /^[\],:{}\s]*$/;
-			validation = validation.test(text.replace(/\\["\\\/bfnrtu]/g, '@')
-				.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-				.replace(/(?:^|:|,)(?:\s*\[)+/g, ''))
+			// manejo de errores 
+			const hayRespuesta = text !== ''? true : false; 
+			let json = {}, validation = '';
+			let errString = 'El servidor no regreso ninguna respuesta'; 
 
-			if(validation){
-				json = JSON.parse(text);
-				return json;
-			} else {
-				start = text.search(/{/);
-				end = text.search(/}/)+1;
-				if(start >= 0 && end >= 0){
-					json = JSON.parse(text.substring(start, end));
+			if ( hayRespuesta ){
+				validation = /^[\],:{}\s]*$/;
+				validation = validation.test(text.replace(/\\["\\\/bfnrtu]/g, '@')
+					.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+					.replace(/(?:^|:|,)(?:\s*\[)+/g, ''))
+				if ( validation ) {
+					json = JSON.parse(text);
+					return json;
 				}
-				return Promise.reject(json)
+				errString = text;
 			}
-		})
-		.then(json => {
-			if(json.error){
-				return Promise.reject(json)
-			}
-			return json;
-		})
-	}
-	Promise.reject({ error: 'Server', message:`La consulta no contiene una sentencia: [${tipos.toString()}]` })
-} 
 
+			return Promise.reject({
+				error: 'Server',
+				message: errString
+			});
+		})
+		.then(json => 
+			json.error ? Promise.reject(json) : json 
+		)
+	}
+	return Promise.reject({ error: 'Server', message:`La consulta no contiene una sentencia: [${tipos.toString()}]` })
+} 
 
 export { consultarServidor };

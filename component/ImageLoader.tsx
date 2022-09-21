@@ -1,69 +1,64 @@
 import { useState, useEffect } from 'react';
 
-function ImageLoader(props){
+const ImageLoader = props =>{
 	const [connection, setStatusConnection] = useState(window.navigator.onLine);
 	const [imagen, setImagen] = useState();
+	const error = [];
+	let onlineImage = '', offlineImage = '', width = '', height= '';
 
-	const onlineImage = props.onlineImage;
-	const offlineImage = props.offlineImage;
-	let width = `${props.width}px` 
-	let height = `${props.height}px` 
+	props.onlineImage ? onlineImage = props.onlineImage : error.push('onlineImage: Int');
+	props.offlineImage ? offlineImage = props.offlineImage : error.push('offlineImage: Int');
+	props.width ? width = `${props.width}px` : width = `250px`;
+	props.height ? height = `${props.height}px`  : height = `250px`;
 
-	if(!props.width){
-		width = `250px` 
-	}
-	
-	if(!props.height){
-		height = `250px` 
-	}
-	
 	// una vez y cuando cambie el estado de la conexión
-	useEffect( function(){
-		loadImageTag('1.1');
-	}, [connection])
+	useEffect( () => 
+		checkProps()
+		.then( loadImageTag('1.1') ), [ connection ]);
 
+	const checkProps = () => {
+		return new Promise( (resolve, reject) => {
+			error.length > 0 ?  
+			reject('Falta las propiedades del componente: { ' + error.toString() + ' }')  :
+			resolve()
+		})
+	}
 
-	function loadImageTag(version){
+	const loadImageTag = version =>{
 		let estado = false;
 		// estoy online
 		if(connection){
 			// obtener imagen
 			return fetch(onlineImage)
-			.then(function(e){
-				if(e.status !== 404 ){
-					estado = true;
-				}
+			.then( e => {
+				e.status !== 404 ? estado = true : estado = false;
 				return estado;
 			})
-			.then(function(e){
+			.then( e => {
 				// validando respuesta de encontrada
 				if(e){
 					if(version){
 						// almacenando en cache
 						return window.caches.open(version)
-						.then(function(cache){
-							return cache.add(onlineImage);
-						})
-						.then(function(){
+							// :Agregando imagen a cache:
+						.then( cache => cache.add(onlineImage) )
 							// cambiando el valor del estado de la imagen a presentar online
-							return setImagen(onlineImage);
-						})
+						.then( () => setImagen(onlineImage) )
 					}
 				}
 				// cambiando el valor del estado de la imagen a presentar desde local
 				return setImagen(offlineImage);
 			})
-
 		} else {
 			return window.caches.has(version)
-			.then(function(have){
+			.then( have => {
 				// hay version de cache almacenada
 				if(have){
-					return new Promise(function(resolve, reject){
+					return new Promise( (resolve, reject) => {
 						window.caches.open(version)
-						.then(function(cache) {
+						.then( cache => {
 							return cache.match(onlineImage)
-							.then(function(response){
+							.then( response => {
 								if(typeof response === 'object' && response.status === 200){
 									resolve(response.blob())
 								}
@@ -71,18 +66,12 @@ function ImageLoader(props){
 							})
 						})
 					})
-					.then(function(response){
-						let pathCreated = URL.createObjectURL(response);
-						return pathCreated;
-					})
-					.then(function(pathImage){
-					// cambiando el valor del estado de la imagen a presentar, desde cache
-						return setImagen(pathImage);
-					})
-					.catch(function(){
-						return setImagen(offlineImage);
-					})
+					.then( response => URL.createObjectURL(response) )
+						// :Presentando offlineimage desde cache: cambiando el valor del estado de la imagen a presentar, desde cache
+					.then( pathImage => setImagen(pathImage) )
+					.catch( () => setImagen(offlineImage) );
 				} else {
+					// :Presentando offlineimage desde local:
 					return setImagen(offlineImage);
 				}
 			})
@@ -90,7 +79,7 @@ function ImageLoader(props){
 	}
 
 	return (
-		<img src={ imagen } width={ width } height={ height } alt=""/>
+		<img src={ imagen } width={ width } height={ height } />
 	);
 }
 

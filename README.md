@@ -19,62 +19,34 @@ El componente revisa la conexión al inicializar, para validar que imagen presen
 
 **Resultados**
 ```js
-import ImageLoader from './component/ImageLoader';
-
 import offline from './assets/imagen.png'; // recurso local 
 
-function App() {
+const online = 'https://cdn.dribbble.com/users/1198445/screenshots/15064463/105628281-b86efa80-5e44-11eb-821c-87d5fddb9f8a_4x.png'; // recurso en línea
 
-  const online = 'https://cdn.dribbble.com/users/1198445/screenshots/15064463/105628281-b86efa80-5e44-11eb-821c-87d5fddb9f8a_4x.png'; // recurso en línea
-  
-  // agregando las propiedades del componente
-  const props = {
-    onlineImage: online,
-    offlineImage: offline,
-    width: 100, // default 250
-    height: 100 // default 250
-  }
-
-
-  return (
-    <div className="App">
-      <ImageLoader {...props}/>
-    </div>
-  )
-}
+ // llamar componente
+<ImageLoader onlineImage={ online } offlineImage={ offline } width={ 100 } height={ 100 }/>
 ```
 
 #### `ListaDesplegable`
 **Descripción**
 
-El componente carga las opciones de un elemento `<select>` con los resultados de una consulta de la base de datos local (si no hay conexión a internet) o base de datos de servidor (si exite la conexión a internet).
+El componente inserta información en la base de datos local si existe conexión a internet y presenta una lista desplegable filtrando por la propiedad `megaproyecto` enviada dentro del componente. 
 
 **{ Propiedades }**
 
-- **queryServer** *(string)** : consulta a ejecutar cuando existe conexión a internet.
-- **queryLocal** *(json)** : 
-  - **tabla** *(string)**: nombre de la tabla que se va consultar la información.
-  - **props** *(json)**: objeto de parametro `props` que recibe una consulta de tipo función `select(tableName, props)` en script [querys](https://github.com/angeljsus/querys.git).
+- **megaproyecto** *(integer)** : opciones del megaproyecto que presentará en la lista desplegable.
 
 **Requerimientos**
-El componente requiere el uso de las funciones de la carpeta `../logic/ConsultarServidor` y `../logic/querys`
+El componente requiere el uso de las siguientes funciones de la carpeta  `../logic/querys`
+```js
+import { select, getDatabase }  from '../logic/querys'; // getDatabase es como accede a la base de datos local para realizar las consultas. 
+```
 
 **Resultados**
 
 ```js
-
-function App() {
-
-  const props = {
-    queryServer : 'SELECT * FROM TBL_USUARIO;',
-    queryLocal: { tabla: 'TBL_USUARIO', props: { cols:'nombre_usuario'} }
-  }
-
-  return (
-    <div className="App">
-      <ListaDesplegable {...props}/>
-    </div>
-}
+// llamar componente
+<ListaDesplegable megaproyecto={ 2 } />
 ```
 
 # Funciones React

@@ -1,4 +1,8 @@
 <?php  
+	header("Access-Control-Allow-Origin:*");
+	header("Access-Control-Allow-Headers:Content-Type");
+	header('text/plain');
+	
 	include "conexion.php";
 	$json = file_get_contents("php://input");
 	$json = json_decode($json);
@@ -40,7 +44,7 @@
 					}
 					$fila .= " }$comRows\n";
 					$contRows++;
-					$response .= utf8_encode($fila);
+					$response .= $fila;
 			  }
 			  echo "$response]";
 			} else {

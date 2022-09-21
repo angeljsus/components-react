@@ -1,12 +1,14 @@
 <?php 
-	header("Access-Control-Allow-Origin: *");
-	header("Access-Control-Allow-Headers: Content-Type");
-	header("Content-Type: application/json; charset=UTF-8");
-
 	$username = "root";
 	$password = "";
 	$host = "localhost";
-	$dbname ="tt";
+	$dbname ="test";
 
 	$connect = mysqli_connect($host, $username, $password, $dbname);
+	if (!mysqli_connect_errno()) {
+		mysqli_set_charset($connect, "utf8");
+	} else {
+		echo json_encode([ "error" => "Server","message" => mysqli_connect_error()]);
+	  exit();
+	}
 ?>
