@@ -44,13 +44,14 @@ useEffect(() => {
 - El script se encuentra en `./logic/command.tsx` 
 - Registrar los comandos que pueden ser escuchados dentro del array de la variable `commands`
 - Dentro del switch proporcionar que función va correr una vez la conbinación de texto sea detectada.
+- El parametro que recibe la función es para definir el rango de longitud que debe cumplir la cadena para buscar los comandos. 
 
 ```js
-const commandListener = () => {
+const commandListener = longitud => {
     let commands = ['rgtys']
     window.document.addEventListener('keyup', e => {
      // ...
-      if(lenght === 10){
+      if(lenght === longitud){
         // ...
         if(commandFinded) {
           switch(commandFinded){
@@ -73,7 +74,7 @@ const commandListener = () => {
 
 // Una sola vez
 useEffect(() => {
-    commandListener();
+    commandListener(20);
   }, [])
 
 ```

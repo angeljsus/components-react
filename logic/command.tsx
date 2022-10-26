@@ -1,4 +1,4 @@
-const commandListener = () => {
+const commandListener = longitud => {
   let commands = ['rgtys', 'monra']
   window.document.addEventListener('keyup', e => {
     let key = e.key;
@@ -8,7 +8,7 @@ const commandListener = () => {
     let commandFinded = '';
     arrayKeysValues.push(key);
     lenght = arrayKeysValues.length;
-    if(lenght === 10){
+    if(lenght === longitud){
       stringKeyboard = arrayKeysValues.toString();
       stringKeyboard = stringKeyboard.replace(/,/g, '');
       for(let i = 0; i < commands.length; i++){
