@@ -21,6 +21,7 @@ El componente permite controlar el acceso a las aplicaciones. Permite autenticar
 
 // la solicitud de la aplicación manda los parametros con el nombre de la cuenta 
 // ejemplo: ?cuenta=angel.trujillo
+// que baja un objeto JSON para validarlo
 <Login 
   propiedadBajar="nombre_usuario" 
   urlPeticion="http://xxxxxxx/server/users.php"
@@ -40,6 +41,7 @@ No se encuentra conectado a la red del INEGI
 No se encuentra registrado dentro del servicio
 
 ```
+**Recurso:** ./recursos/servidor/tabla_usuarios.sql
 
 #### `ImageLoader`
 **Descripción**
