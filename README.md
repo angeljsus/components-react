@@ -12,7 +12,6 @@ Repositorio de componentes para ser utilizados dentro de aplicaciones de React.
 El componente permite controlar el acceso a las aplicaciones. Permite autenticar por medio del LDAP y un script de php para comprobar que el usuario se encuentre registrado.
 
 **{ Propiedades }**
-- **urlPeticion** *(string)** : ruta del script donde consulta la existencia de datos.
 - **propiedadBajar** *(string)** : Propiedad del JSON que retorna si es autenticado exitosamente.
 
 
@@ -24,13 +23,12 @@ El componente permite controlar el acceso a las aplicaciones. Permite autenticar
 // que baja un objeto JSON para validarlo
 <Login 
   propiedadBajar="nombre_usuario" 
-  urlPeticion="http://xxxxxxx/server/users.php"
 />
 // respuesta auntenticado con LDAP y servicio (consola)
 {
   autenticado: true
   message: "Autenticado desde el servicio"
-  response: "Angel Aguilar"
+  response: "Angel Aguilar"  //este es el dato que tiene la propiedad
   side: "Servicio"
 }
 
