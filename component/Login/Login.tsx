@@ -12,7 +12,7 @@ const Login = () => {
   const [message, setMessage] = useState('');
   // change url
   const urlPeticion = 'http://10.101.1.22:3060/user/'
-  const propiedadBajar = 'nivel_usuario';
+  const propiedadBajar = 'permisos';
 
   const {setModulo, usrApp, setUsrApp } = useContext(ContextAreaDeTrabajo);
 
