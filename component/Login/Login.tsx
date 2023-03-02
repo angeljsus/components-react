@@ -12,7 +12,7 @@ const Login = () => {
   const [message, setMessage] = useState('');
   // change url
   const urlPeticion = 'http://10.101.1.26/tester/ConsultaUsuario.php'
-  const propiedadBajar = 'nivel_usuario';
+  const propiedadBajar = 'cuenta_usuario';
 
   const {setModulo, usrApp, setUsrApp } = useContext(ContextAreaDeTrabajo);
 
@@ -40,14 +40,17 @@ const Login = () => {
 
         return authPromise.then( result => {
           // si nivel es 1 concede el acceso
-          if(result.autenticado && result.response === 1){
-            console.log('Acceso concedido: ', result.autenticado)
-            // MODIFICAR LOS ESTADOS 
-            // setUsrApp(result.idusuario)
-            // agregar modulo de inicio
-            // setModulo('HistoriasUsuario')
+          if(result){ 
+            const { nivel_usuario } = result.response[0]; 
+            if(result.autenticado && nivel_usuario === 1){
+              console.log('Acceso concedido: ', result.autenticado)
+              // MODIFICAR LOS ESTADOS 
+              // setUsrApp(result.idusuario)
+              // agregar modulo de inicio
+              // setModulo('HistoriasUsuario')
+            }
+            setMessage(result.message)
           }
-          setMessage(result.message)
         })
       }
       return setMessage(`El dominio @${dominio} no pertenece a el INEGI`); 
@@ -77,7 +80,7 @@ const Login = () => {
         resolve(respuesta)
       })
       .catch(err => reject(err) )
-   })
+    })
     .then( jsonResponse => jsonResponse.autenticado ? obtenerDatosByService(userName) : jsonResponse )
     .catch(err => setMessage('No se encuentra conectado a la red del INEGI') )
   }
@@ -101,9 +104,8 @@ const Login = () => {
           message: 'No se encuentra registrado dentro del servicio', 
           response: json
         };
-        const keys = Object.keys(json);
-        const propiedad = json[propiedadBajar];
-        if(keys.length > 0 && propiedad){
+        let propiedad = json[0][propiedadBajar];
+        if(propiedad){
           respuesta.autenticado = true;
           respuesta.message = 'Autenticado desde el servicio';
           respuesta.response = propiedad;
@@ -153,4 +155,4 @@ const Login = () => {
   </>
 }
 
-export default Login 
+export default Login;
