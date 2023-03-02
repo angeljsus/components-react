@@ -42,7 +42,7 @@ const Login = () => {
           // si nivel es 1 concede el acceso
           if(result){ 
             const { nivel_usuario } = result.response[0]; 
-            if(result.autenticado && nivel_usuario === 1){
+            if(result.autenticado && nivel_usuario > 0){
               console.log('Acceso concedido: ', result.autenticado)
               // MODIFICAR LOS ESTADOS 
               // setUsrApp(result.idusuario)
