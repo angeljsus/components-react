@@ -37,7 +37,15 @@ const Login = () => {
 
         if(connection){
           return obtenerAutenticacion(userName, passWord, ldapSite, claveApp)
-          .then( result => result ? setMessage(result.message) :  false ) 
+          .then( result => {
+            if(result){
+              if(result.autenticado){
+                // AQUI PONER EL MODULO o cambios de estado
+                // setModulo()
+              }
+              setMessage(result.message)
+            }
+          })  
         }
         return setMessage(`Usted NO cuenta con conexión a Internet`);  
       }
