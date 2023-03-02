@@ -21,9 +21,7 @@ El componente permite controlar el acceso a las aplicaciones. Permite autenticar
 // la solicitud de la aplicación manda los parametros con el nombre de la cuenta 
 // ejemplo: ?cuenta=angel.trujillo
 // que baja un objeto JSON para validarlo
-<Login 
-  propiedadBajar="nombre_usuario" 
-/>
+<Login />
 // respuesta auntenticado con LDAP y servicio (consola)
 {
   autenticado: true

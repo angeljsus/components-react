@@ -5,13 +5,14 @@ import XMLParser from 'react-xml-parser';
 import logoInegi from '../../logos/inegi.png'
 import './Login.css';
 
-const Login = ({ propiedadBajar }) => {
+const Login = () => {
 
   const [user, setUser] = useState('');
   const [pass, setPass] = useState('');
   const [message, setMessage] = useState('');
   // change url
   const urlPeticion = 'https://xxxxx.xxxxx.xxxx/'
+  const propiedadBajar = 'nombre_usuario';
 
   const {setModulo, usrApp, setUsrApp } = useContext(ContextAreaDeTrabajo);
 
