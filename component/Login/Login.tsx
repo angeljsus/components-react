@@ -11,8 +11,8 @@ const Login = () => {
   const [pass, setPass] = useState('');
   const [message, setMessage] = useState('');
   // change url
-  const urlPeticion = 'https://xxxxx.xxxxx.xxxx/'
-  const propiedadBajar = 'nombre_usuario';
+  const urlPeticion = 'http://10.101.1.26/tester/ConsultaUsuario.php'
+  const propiedadBajar = 'nivel_usuario';
 
   const {setModulo, usrApp, setUsrApp } = useContext(ContextAreaDeTrabajo);
 
@@ -39,10 +39,10 @@ const Login = () => {
         Promise.resolve({message:`Usted NO cuenta con conexión a Internet`});
 
         return authPromise.then( result => {
-          if(result.autenticado){
-            // result response es el parametro obtenido 
-            console.log('Que hacer aquí? Acceso concedido: ', result.autenticado)
-            console.log(result)
+          // si nivel es 1 concede el acceso
+          if(result.autenticado && result.response === 1){
+            console.log('Acceso concedido: ', result.autenticado)
+            // MODIFICAR LOS ESTADOS 
             // setUsrApp(result.idusuario)
             // agregar modulo de inicio
             // setModulo('HistoriasUsuario')
@@ -154,7 +154,3 @@ const Login = () => {
 }
 
 export default Login 
-
-
-
-
