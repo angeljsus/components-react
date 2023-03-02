@@ -11,8 +11,8 @@ const Login = () => {
   const [pass, setPass] = useState('');
   const [message, setMessage] = useState('');
   // change url
-  const urlPeticion = 'http://10.101.1.26/tester/ConsultaUsuario.php'
-  const propiedadBajar = 'cuenta_usuario';
+  const urlPeticion = 'http://10.101.1.22:3060/user/'
+  const propiedadBajar = 'nivel_usuario';
 
   const {setModulo, usrApp, setUsrApp } = useContext(ContextAreaDeTrabajo);
 
@@ -34,24 +34,12 @@ const Login = () => {
       const claveApp = 'DGES_NodeJs_GenContCap';
       const connection = navigator.onLine;
       if(!dominio || dominio === 'inegi.org.mx'){
-        const authPromise = connection ? 
-        obtenerAutenticacion(userName, passWord, ldapSite, claveApp) : 
-        Promise.resolve({message:`Usted NO cuenta con conexión a Internet`});
 
-        return authPromise.then( result => {
-          // si nivel es 1 concede el acceso
-          if(result){ 
-            const { nivel_usuario } = result.response[0]; 
-            if(result.autenticado && nivel_usuario > 0){
-              console.log('Acceso concedido: ', result.autenticado)
-              // MODIFICAR LOS ESTADOS 
-              // setUsrApp(result.idusuario)
-              // agregar modulo de inicio
-              // setModulo('HistoriasUsuario')
-            }
-            setMessage(result.message)
-          }
-        })
+        if(connection){
+          return obtenerAutenticacion(userName, passWord, ldapSite, claveApp)
+          .then( result => result ? setMessage(result.message) :  false ) 
+        }
+        return setMessage(`Usted NO cuenta con conexión a Internet`);  
       }
       return setMessage(`El dominio @${dominio} no pertenece a el INEGI`); 
     } 
@@ -59,7 +47,7 @@ const Login = () => {
 
   const obtenerAutenticacion = (userName, passWord, ldapSite, claveApp) => {
     const params = `loginUsr=${userName}&passUsr=${encodeURIComponent(passWord)}&claveAplicacion=${claveApp}`;
-    const urlAuth = new URL(`${ldapSite}/Autenticar?${params}`, ldapSite);
+    const urlAuth = new URL(`${ldapSite}/Autenticar?${params}`, ldapSite);    
     return new Promise( (resolve, reject) => {
       return fetch(urlAuth,{
         method: 'GET',
@@ -82,12 +70,14 @@ const Login = () => {
       .catch(err => reject(err) )
     })
     .then( jsonResponse => jsonResponse.autenticado ? obtenerDatosByService(userName) : jsonResponse )
-    .catch(err => setMessage('No se encuentra conectado a la red del INEGI') )
+    .catch(err => {
+      setMessage('No se encuentra conectado a la red del INEGI') 
+      console.log({error: err})
+    })
   }
 
   const obtenerDatosByService = (userName) => {
-    const params = `?cuenta=${userName}`;
-    const peticion = urlPeticion + params;
+    const peticion = urlPeticion + userName;
     return new Promise( (resolve, reject) => {
       return fetch(peticion,{
         method: 'GET',
@@ -104,18 +94,20 @@ const Login = () => {
           message: 'No se encuentra registrado dentro del servicio', 
           response: json
         };
-        let propiedad = json[0][propiedadBajar];
-        if(propiedad){
+        let numero = 0;
+        if(json && json[0]){
+          numero = json[0][propiedadBajar] ? json[0][propiedadBajar] : 0;
+        }
+        console.log('validando con propiedad: [%s]',propiedadBajar)
+        if(numero > 0){
           respuesta.autenticado = true;
           respuesta.message = 'Autenticado desde el servicio';
-          respuesta.response = propiedad;
+          respuesta.response = json;
         }
         resolve(respuesta)
-
       })
       .catch(err => reject(err) )
     })
-    return Promise.resolve({userName, peticion})
   }
 
   return <>
