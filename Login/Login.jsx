@@ -103,7 +103,7 @@ const Login = () => {
          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8;',
         }
        })
-      .then( response => console.log(response.status) )
+      // .then( response => console.log(response.status) )
       .then( response => response.status === 404 ? Promise.reject({ message: 'Script no encontrado'}) : response.text())
       .then( text => text ? JSON.parse(text) : {} )
       .then( json => {
