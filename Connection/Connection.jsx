@@ -6,7 +6,8 @@ const Connection = () => {
 	const [timer, setStatusTimer] = useState(0);
 	const [message, setMessage] = useState('');
 	const seconds = 60000; // un minuto
-	const URL = 'http://localhost/auth/ping.php';
+	const HOST = 'localhost';
+	const PATH = ''; 
 
 	useEffect(() => {
 		pingConnection(1);
@@ -17,7 +18,6 @@ const Connection = () => {
 			const interval = setInterval(() => {
 				if (window.navigator.onLine) {
 					pingConnection(timer + 1);
-					console.log(window.navigator.onLine)
 					setOnline(true);
 				} else {
 					setOnline(false);
@@ -28,19 +28,22 @@ const Connection = () => {
 	}, [timer]);
 
 	const pingConnection = (inicio) => {
-
-		return fetch(URL, { })
-			.then(({ ok, status }) => (status === 200 && ok ? true : false))
-			.then(
-				(acceso) => {
-					setStatusAccessURL(acceso);
-					setStatusTimer(inicio);
-				},
-				(error) => {
-					setStatusAccessURL(false);
-					setStatusTimer(inicio);
-				}
-			)
+		const sec = seconds / 1000;
+		const minutes = sec / 60;
+		timer > 0 ? console.log('Han pasado %s %s', sec < 60 ? sec : minutes, sec < 60 ? 'segundos' : 'minuto(s)') : null;
+		window.Main.ping(HOST, PATH)
+			.then((result) => {
+				//  WATCH REQ NODE PROPERTIES
+				// console.log(result)
+				setStatusAccessURL( true);
+				setStatusTimer(inicio);
+			})
+			.catch((err) => {
+				// LOG ERROR HERE!
+				// console.log(err)
+				setStatusAccessURL(false);
+				setStatusTimer(inicio);
+			});
 	};
 
 	return (
