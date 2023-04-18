@@ -17,6 +17,7 @@ const Connection = () => {
 			const interval = setInterval(() => {
 				if (window.navigator.onLine) {
 					pingConnection(timer + 1);
+					console.log(window.navigator.onLine)
 					setOnline(true);
 				} else {
 					setOnline(false);
@@ -27,7 +28,8 @@ const Connection = () => {
 	}, [timer]);
 
 	const pingConnection = (inicio) => {
-		return fetch(URL)
+
+		return fetch(URL, { })
 			.then(({ ok, status }) => (status === 200 && ok ? true : false))
 			.then(
 				(acceso) => {
@@ -38,12 +40,12 @@ const Connection = () => {
 					setStatusAccessURL(false);
 					setStatusTimer(inicio);
 				}
-			);
+			)
 	};
 
 	return (
 		<>
-			{online ? 'Online' : 'Offline'}: {statusAccessURL ? 'Si tiene acceso a la URL' : 'NO tienes acceso a la URL'}{' '}
+			{online ? 'Online:: ' + (statusAccessURL ? 'Si tiene acceso a la URL' : 'NO tienes acceso a la URL') : 'Offline!'}
 		</>
 	);
 };
