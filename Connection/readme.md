@@ -19,7 +19,6 @@ const api = {
 // ...
 // funcion
 	ping: (hostSite: string, pathSite: string) => {
-  const http = require('http');
   const req = http.get({ host: hostSite, path: pathSite });
   return new Promise((resolve, reject) => {
     req.end();
