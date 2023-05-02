@@ -1,6 +1,9 @@
-import { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
+import ButtonOne from './../Elements/ButtonOne';
 
-const Connection = () => {
+import axios from 'axios';
+
+const Text = () => {
 	const [statusAccessURL, setStatusAccessURL] = useState(false);
 	const [online, setOnline] = useState(window.navigator.onLine);
 	const [timer, setStatusTimer] = useState(0);
@@ -31,16 +34,21 @@ const Connection = () => {
 		const sec = seconds / 1000;
 		const minutes = sec / 60;
 		timer > 0 ? console.log('Han pasado %s %s', sec < 60 ? sec : minutes, sec < 60 ? 'segundos' : 'minuto(s)') : null;
-		window.Main.ping(HOST, PATH)
+		// 3er parametro headers si es necesario
+		window.Main.ping(HOST, PATH, {})
 			.then((result) => {
-				//  WATCH REQ NODE PROPERTIES
-				// console.log(result)
-				setStatusAccessURL( true);
-				setStatusTimer(inicio);
+				console.log(result)
+				return new Promise((resolve, reject) => {
+					// 403, 500, 'ECONNREFUSED', 'ENOTFOUND' are connection's errors
+					result.statusCode === 200 || result.statusCode === 302 
+						? resolve(result)
+						: reject(result);
+				})
 			})
+			.then(() => setStatusAccessURL( true))
+			.then(() => setStatusTimer(inicio))
 			.catch((err) => {
-				// LOG ERROR HERE!
-				// console.log(err)
+				console.log('Ocurrio un error al realizar la peticion: ', err);
 				setStatusAccessURL(false);
 				setStatusTimer(inicio);
 			});
@@ -53,4 +61,4 @@ const Connection = () => {
 	);
 };
 
-export default Connection;
+export default Text;

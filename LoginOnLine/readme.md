@@ -32,7 +32,7 @@ El módulo permite realizar la autenticación del usuario bajando y comparando l
 	// 17 La ruta en la que se realizaran las peticiones. Esta ruta será concatenada con el valor de la cuenta inputado desde el login
 	const urlPeticion = 'http://xxxxx.xxx.xxx/user/'
 	// 18 La propiedad del json que contiene el valor de la contraseña
-	 const propiedadPass = 'password_usuario';
+	const propiedadPass = 'password_usuario';
 	// 27 introducir el nombre del componente a cargar una vez termine con éxito el procedimiento
 	setModulo('HomeModule')
 	```
