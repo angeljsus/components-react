@@ -6,17 +6,62 @@ El módulo permite realizar la autenticación del usuario autenticando primero p
 
 ## Requerimientos
 
-- Instalar `react-xml-parser`
+- Instalar `react-xml-parser`:
 	```bash
 	npm install react-xml-parser --save
 	```
-- Modificar las siguientes líenas de código si es necesario:
+- Dentro del archivo del preload agregar la siguiente funcion (si aún no se encuentra dentro de la api):
+	```tsx
+		// ./electron/preload.ts
+	import http from 'http';
+	// ...
+
+	const api = {
+	// ...
+	// PING
+	  ping: (hostSite: string, pathSite: string, headers: {}) => {
+	    return new Promise((resolve: any, reject: any) => {
+	      const request = http.get({ host: hostSite, path: pathSite, headers: headers }, (res) => {
+	        let string = '';
+	        res.on('data', (data) => {
+	          string += data.toString();
+	        });
+	        res.on('end', function () {
+	          const resp = {
+	            host: hostSite,
+	            path: pathSite,
+	            statusCode: res.statusCode,
+	            statusMessage: res.statusMessage,
+	            data: string
+	          };
+	          resolve(resp);
+	        });
+	      });
+	      request.on('error', (err: any) => {
+	        const resp = {
+	          host: hostSite,
+	          path: pathSite,
+	          statusCode: err.code ? err.code : null,
+	          statusMessage: err.message,
+	          data: []
+	        };
+	        reject(resp);
+	      });
+	      });
+	  },
+	// PING
+	}
+	```
+
+- Modificar las siguientes líenas de código si es necesario que se encuentran dentro del componente:
 	```js
-	// 14 La ruta en la que se realizaran las peticiones. Esta ruta será concatenada con el valor de la cuenta inputado desde el login
-	const urlPeticion = 'http://xxxxx.xxx.xxx/user/'
-	// 15 La propiedad del json que contiene el valor a comparar (mi_prop_valor > 0)
-	 const propiedadBajar = 'mi_nombre_propiedad';
-	// 43 introducir el nombre del componente a cargar una vez termine con éxito el procedimiento
+	//... Login.jsx
+
+	// línea 13-15
+	const HOST = '10.101.1.22:3060';
+	const PATH = '/user';
+	const propiedadBajar = 'permisos';
+	// línea 41
 	setModulo('HomeModule')
 	```
 
@@ -24,10 +69,10 @@ El módulo permite realizar la autenticación del usuario autenticando primero p
 
 - **Exito:** abre el módulo de la aplicación (si tiene un módulo asignado en el proceso)
 - **Error:** Muestra los siguientes mensajes al usuario:
-	- No es posible acceder al Servicio. Intente más tarde.
+	- El servicio NO se encuentra disponible. Intente más tarde.
 	- No se encuentra registrado dentro del servicio.
 	- No es posible autenticarse. Asegurate de conexión a una red INEGI e intenta nuevamente.
 	- Usuario y/o contraseña erronea.
 	- Usted NO cuenta con conexión a Internet.
 	- El dominio xxx.xx.xx no pertenece a el INEGI.
-	- No es posible acceder al Servicio. Intente más tarde.
+	- Algo salió mal. Favor de notificarlo con el administrador del Sistema..
