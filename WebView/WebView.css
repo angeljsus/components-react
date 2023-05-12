@@ -1,0 +1,11 @@
+.web-view {
+	width: 800px;
+	height: 450px;
+}
+
+.web-view-button {
+	width: 120px;
+	height: 30px;
+	background: #0000;
+	border: 1px solid;
+}
