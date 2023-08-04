@@ -15,7 +15,8 @@ const Login = () => {
   const propiedadBajar = 'permisos';
   // modificar esta parte si es requerido
 
-  const {setModulo, usrApp, setUsrApp } = useContext(ContextAreaDeTrabajo);
+  const { setModulo, usrApp, setUsrApp, setUsuario } =
+    useContext(ContextAreaDeTrabajo);
 
   const validaDatos = (e) => {
     e.preventDefault();
@@ -37,6 +38,7 @@ const Login = () => {
               console.log(result);
               if (result) {
                 if (result.autenticado) {
+                  setUsuario(result.response)
                   // AQUI PONER EL MODULO o cambios de estado
                   // setModulo()
                 }
@@ -137,7 +139,7 @@ const Login = () => {
           if (numero > 0) {
             respuesta.autenticado = true;
             respuesta.message = 'Autenticado desde el servicio.';
-            respuesta.response = json;
+            respuesta.response = json[0];
           }
           resolve(respuesta);
         })
